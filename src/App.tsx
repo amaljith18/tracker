@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link, Route, Routes, useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowLeft, ArrowRight, Check, CheckCircle2, Copy, ExternalLink,
-  Link2, LoaderCircle, MapPin, Play, ShieldCheck, Trash2, Video,
+  Link2, LoaderCircle, MapPin, Play, ShieldCheck, Trash2,
 } from 'lucide-react'
 import { deleteSavedLink, getSavedLinks, saveLink, type SavedLink } from './lib/links'
 
@@ -24,7 +24,6 @@ function HomePage() {
   const [result, setResult] = useState<{ shareLink: string; viewLink: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const navigate = useNavigate()
 
   async function generateLink() {
     setLoading(true)
