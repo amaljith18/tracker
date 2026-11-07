@@ -35,7 +35,7 @@ function HomePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ label }),
       })
-      if (!response.ok) throw new Error('Could not create the link. Check that the API server is running.')
+      if (!response.ok) throw new Error('Could not create the link. Please try again in a moment.')
       const { id } = await response.json() as { id: string }
       const origin = window.location.origin
       saveLink({ id, label: label.trim(), createdAt: Date.now() })
