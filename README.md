@@ -1,25 +1,21 @@
 # Location Tracker — React + TypeScript + Tailwind CSS
 
-This rebuild includes the original home page, link generation, My Links page, visitor share page, and live-location view page.
+The app includes link generation, My Links, a visitor share page, and a location dashboard.
 
 ## Run locally
 
 ```bash
 npm install
-npm run dev
+netlify dev --port 8889
 ```
 
-Open the Vite URL printed in the terminal (normally http://localhost:5173).
-The API server runs at http://localhost:3002 and Vite proxies `/api` requests to it.
+Open http://localhost:8889. Netlify Dev runs Vite and the Netlify Functions API together. Running Vite alone does not serve the API.
 
-## Production build
+## Deploy on Netlify
 
-```bash
-npm run build
-npm start
-```
+Netlify builds the frontend with `npm run build`, publishes `dist`, and deploys the API from `netlify/functions`. Client-side routes are served through the SPA fallback in `netlify.toml`.
 
-The Express server serves the production build and API on port 3001.
+Links and location submissions persist in Netlify Database using the schema in `db/schema.ts`. Database provisioning and migrations happen automatically during deployment. To change the schema, update that file and generate a migration with `npx drizzle-kit generate --name descriptive_change_name`.
 
 ## Routes
 
@@ -28,37 +24,8 @@ The Express server serves the production build and API on port 3001.
 - `/t/:id` — Visitor page with explicit one-time location sharing and video
 - `/view/:id` — Location dashboard with map and coordinates
 
-## Important notes
+## Location sharing
 
-- The visitor's browser prompts for location only after they click **Share my location**.
-- If they decline, the video remains available using **Watch without sharing**.
-- Coordinates are sent once to `POST /api/location` only after permission is granted.
-- Geolocation requires HTTPS in production (localhost is permitted for development).
-- The demo API stores links and location records in server memory. Restarting the server clears them. Use a persistent database and appropriate access controls before production deployment.
-- Links saved under My Links are stored in the visitor/creator browser's local storage, so they are device-specific.
+The visitor's browser prompts for location only after they click **Share my location**. Coordinates are sent once to `POST /api/location` only after permission is granted. Video playback remains available if permission is declined. Geolocation requires HTTPS in production; localhost is permitted for development.
 
-
-## Port conflict fix
-
-The API server now defaults to port 3002 to avoid conflicts with another local
-service already using port 3001. Vite proxies `/api` to port 3002.
-
-If port 3002 is also occupied, set a different port before starting:
-
-PowerShell:
-```powershell
-$env:PORT=3003
-npm run dev
-```
-
-Then update `vite.config.ts` proxy target to `http://localhost:3003`.
-
-
-## Share button behavior
-
-On the visitor page, clicking **Share my location** starts the video and
-requests the browser's native location permission at the same time. The browser
-controls the permission prompt. Coordinates are sent only if the visitor
-chooses Allow; if they choose Block, video playback continues but no location
-is sent. Browsers may restrict autoplay with sound, so the video may initially
-start muted or require the visitor to press the YouTube play control.
+The My Links list remains device-specific and is saved in browser local storage. Link records and location submissions are stored in the database. Anyone with a link ID can access its location dashboard, so share dashboard URLs only with intended recipients.
