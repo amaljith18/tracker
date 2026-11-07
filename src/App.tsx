@@ -50,14 +50,14 @@ function HomePage() {
   return (
     <Shell>
       <section className="w-full max-w-[620px] rounded-[22px] bg-white p-7 shadow-soft sm:p-9">
-        <h1 className="text-[27px] font-bold tracking-tight text-black">Location Tracker</h1>
+        <h1 className="text-[27px] font-bold tracking-tight text-black">YouTube Shorts</h1>
         <Link to="/links" className="mt-2 inline-flex items-center gap-1 text-[15px] text-blue-600 hover:underline">
-          View my links <ArrowRight size={16} />
+          View my video links <ArrowRight size={16} />
         </Link>
 
         <p className="mb-6 mt-5 text-[18px] leading-[1.65] text-slate-600">
-          Generate a link and send it to the person you want to meet. They can choose
-          to share their location, and you can view it on your private link page.
+          Create a link to watch the video and share it with someone. Viewers can
+          also choose to share their location with you using a separate, optional button.
         </p>
 
         <label htmlFor="label" className="sr-only">Link name (optional)</label>
@@ -66,7 +66,7 @@ function HomePage() {
           value={label}
           onChange={(event) => setLabel(event.target.value)}
           onKeyDown={(event) => { if (event.key === 'Enter') void generateLink() }}
-          placeholder="Who is this for? (optional label)"
+          placeholder="Name this video link (optional)"
           className="mb-4 w-full rounded-xl border border-slate-300 bg-white px-4 py-4 text-base text-slate-900 outline-none transition placeholder:text-slate-500 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
         />
 
@@ -77,15 +77,15 @@ function HomePage() {
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-4 text-base font-semibold text-white transition hover:bg-blue-700 disabled:cursor-wait disabled:opacity-70"
         >
           {loading && <LoaderCircle size={19} className="animate-spin" />}
-          {loading ? 'Generating…' : 'Generate tracking link'}
+          {loading ? 'Generating…' : 'Create video link'}
         </button>
 
         {error && <p role="alert" className="mt-4 text-sm text-red-600">{error}</p>}
 
         {result && (
           <div className="mt-7 grid gap-4">
-            <LinkResult label="Share this link with them" url={result.shareLink} />
-            <LinkResult label="Open this page to view shared location" url={result.viewLink} />
+            <LinkResult label="Share this link to watch the video" url={result.shareLink} />
+            <LinkResult label="View optional location shares for this video link" url={result.viewLink} />
           </div>
         )}
       </section>
@@ -149,7 +149,7 @@ function MyLinksPage() {
           <ArrowLeft size={16} /> Back to home
         </button>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl font-bold text-slate-950">My tracking links</h1>
+          <h1 className="text-2xl font-bold text-slate-950">My video links</h1>
           <Link to="/" className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Create new link</Link>
         </div>
         {links.length === 0 ? (
@@ -167,7 +167,7 @@ function MyLinksPage() {
                     <p className="font-semibold text-slate-900">{item.label || 'Untitled link'}</p>
                     <p className="mt-1 text-xs text-slate-500">Created {new Date(item.createdAt).toLocaleString()}</p>
                     <p className="mt-2 text-sm text-slate-500">
-                      {statuses[item.id]?.pings ? 'Location shared' : 'Waiting for location sharing'}
+                      {statuses[item.id]?.pings ? 'Optional location shared' : 'No optional location shared'}
                     </p>
                   </div>
                   <button onClick={() => remove(item.id)} aria-label="Remove saved link" className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600">
@@ -175,7 +175,7 @@ function MyLinksPage() {
                   </button>
                 </div>
                 <Link to={`/view/${item.id}`} className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:underline">
-                  Open location page <ExternalLink size={14} />
+                  View optional location shares <ExternalLink size={14} />
                 </Link>
               </div>
             ))}
@@ -237,9 +237,9 @@ function SharePage() {
         <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white">
           <MapPin size={23} />
         </div>
-        <h1 className="text-center text-2xl font-bold text-slate-950">Share your location</h1>
+        <h1 className="text-center text-2xl font-bold text-slate-950">Watch the video</h1>
         <p className="mx-auto mt-3 max-w-lg text-center text-sm leading-6 text-slate-600">
-          When you press the button, the video starts and your browser asks whether
+          Press “Play the video” to start this YouTube Short. Your browser asks whether
           you want to share your current location. Your location is sent only if you
           choose Allow.
         </p>
@@ -250,21 +250,21 @@ function SharePage() {
           className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-4 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {state === 'loading' ? <LoaderCircle size={19} className="animate-spin" /> : state === 'shared' ? <CheckCircle2 size={19} /> : <MapPin size={19} />}
-          {state === 'loading' ? 'Waiting for permission…' : state === 'shared' ? 'Location shared' : 'Share my location'}
+          {state === 'loading' ? 'Waiting for permission…' : state === 'shared' ? 'Location shared' : 'Play the video'}
         </button>
 
         {notice && <p role="status" className={`mt-3 text-center text-sm ${state === 'shared' ? 'text-emerald-700' : 'text-slate-600'}`}>{notice}</p>}
 
         <div className="mt-7 border-t border-slate-100 pt-6">
           <div className="mb-3 flex items-center justify-between gap-3">
-            <h2 className="font-semibold text-slate-900">Video</h2>
+            <h2 className="font-semibold text-slate-900">YouTube Shorts</h2>
           </div>
           {videoStarted ? (
             <div className="aspect-video overflow-hidden rounded-xl bg-black">
               <iframe
                 className="h-full w-full"
                 src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1`}
-                title="YouTube video"
+                title="YouTube Short"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
@@ -273,7 +273,7 @@ function SharePage() {
           ) : (
             <button onClick={() => setVideoStarted(true)} className="group flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 text-white">
               <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-slate-900 transition group-hover:scale-105"><Play size={23} fill="currentColor" className="ml-1" /></span>
-              <span className="text-sm font-semibold">Play video</span>
+              <span className="text-sm font-semibold">Play the video</span>
             </button>
           )}
         </div>
@@ -322,8 +322,8 @@ function ViewPage() {
         <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm text-blue-300 hover:underline"><ArrowLeft size={16} /> Home</Link>
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-sm text-slate-400">Location dashboard</p>
-            <h1 className="text-2xl font-bold sm:text-3xl">{data?.label ? `Live location · ${data.label}` : 'Live location'}</h1>
+            <p className="text-sm text-slate-400">Video link dashboard</p>
+            <h1 className="text-2xl font-bold sm:text-3xl">{data?.label ? `Optional location shares · ${data.label}` : 'Optional location shares'}</h1>
           </div>
           <span className="rounded-full bg-slate-800 px-3 py-1.5 text-xs text-slate-300">Refreshes every 4 seconds</span>
         </div>
@@ -333,8 +333,8 @@ function ViewPage() {
         {!loading && !error && !latest && (
           <div className="rounded-2xl border border-slate-700 bg-slate-900 p-8 text-center">
             <MapPin size={32} className="mx-auto text-slate-500" />
-            <h2 className="mt-3 font-semibold">Waiting for location sharing</h2>
-            <p className="mt-1 text-sm text-slate-400">No location has been shared through this link yet.</p>
+            <h2 className="mt-3 font-semibold">No optional location shares yet</h2>
+            <p className="mt-1 text-sm text-slate-400">Viewers can watch the video without sharing their location.</p>
           </div>
         )}
         {latest && (
